@@ -1,0 +1,24 @@
+{
+  "name": "multiplayer_game_poc",
+  "version": "1.0.0",
+  "description": "A server and client setup to build multiplayer game[POC].",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "typescript",
+    "game",
+    "multiplayer"
+  ],
+  "author": "Shubham Dangwal",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/ws": "^8.5.12",
+    "http-server": "^14.1.1",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
