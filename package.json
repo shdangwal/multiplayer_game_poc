@@ -4,6 +4,9 @@
   "description": "A server and client setup to build multiplayer game[POC].",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "serve": "node serve.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
