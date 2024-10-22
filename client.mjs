@@ -39,12 +39,7 @@ import * as common from "./common.mjs";
                     id: message.id,
                     x: message.x,
                     y: message.y,
-                    moving: {
-                        "left": false,
-                        "right": false,
-                        "up": false,
-                        "down": false,
-                    }
+                    moving: common.DEFAULT_MOVING,
                 });
             }
             else if (common.isPlayerLeft(message)) {

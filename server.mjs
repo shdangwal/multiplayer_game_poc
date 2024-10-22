@@ -29,7 +29,19 @@ wss.on("connection", (ws) => {
         kind: "PlayerJoined",
         id, x, y,
     });
-    ws.on("message", () => {
+    ws.addEventListener("message", (event) => {
+        const message = JSON.parse(event.data.toString());
+        if (common.isPlayerMoving(message)) {
+            if (message.id !== id) {
+                console.log(`Player ${id} tried to cheat by sending message ${message}`);
+                ws.close();
+            }
+            eventQueue.push(message);
+        }
+        else {
+            console.log(`Recieved bogus message from client ${id}: `, message);
+            ws.close();
+        }
     });
     ws.on("close", () => {
         console.log(`Player ${id} disconnected.`);
@@ -66,10 +78,22 @@ function tick() {
                     });
                 }
                 break;
-            case "PlayerLeft": {
-                const eventString = JSON.stringify(event);
-                players.forEach((player) => player.ws.send(eventString));
-            }
+            case "PlayerLeft":
+                {
+                    const eventString = JSON.stringify(event);
+                    players.forEach((player) => player.ws.send(eventString));
+                }
+                break;
+            case "PlayerMoving":
+                {
+                    const player = players.get(event.id);
+                    if (player === undefined)
+                        continue;
+                    player.moving[event.direction] = event.start;
+                    const eventString = JSON.stringify(event);
+                    players.forEach((player) => player.ws.send(eventString));
+                }
+                break;
         }
     }
     eventQueue.length = 0;
