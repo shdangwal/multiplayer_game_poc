@@ -12,6 +12,9 @@ export const DIRECTION_VECTORS = {
 export function isNumber(arg) {
     return typeof (arg) === "number";
 }
+export function isString(arg) {
+    return typeof (arg) === "string";
+}
 export function isBoolean(arg) {
     return typeof (arg) === "boolean";
 }
@@ -26,7 +29,8 @@ export function isPlayerJoined(arg) {
     return arg && arg.kind === "PlayerJoined"
         && isNumber(arg.id)
         && isNumber(arg.x)
-        && isNumber(arg.y);
+        && isNumber(arg.y)
+        && isString(arg.style);
 }
 export function isPlayerLeft(arg) {
     return arg && arg.kind === "PlayerLeft"

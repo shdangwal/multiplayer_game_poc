@@ -31,7 +31,7 @@ const DIRECTION_KEYS = {
             const message = JSON.parse(event.data);
             if (common.isHello(message)) {
                 myId = message.id;
-                console.log(`Connected as Player:${myId}`);
+                console.log(`Connected as Player:${myId}`, message);
             }
             else {
                 console.log("Received bogus message from server:", message);
@@ -51,6 +51,7 @@ const DIRECTION_KEYS = {
                         "up": false,
                         "down": false,
                     },
+                    style: message.style,
                 });
             }
             else if (common.isPlayerLeft(message)) {
@@ -79,9 +80,9 @@ const DIRECTION_KEYS = {
         previousTimestamp = timestamp;
         ctx.fillStyle = "grey";
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "red";
         players.forEach((player) => {
             common.updatePlayer(player, deltaTime);
+            ctx.fillStyle = player.style;
             ctx.fillRect(player.x, player.y, common.PLAYER_SIZE, common.PLAYER_SIZE);
         });
         window.requestAnimationFrame(frame);

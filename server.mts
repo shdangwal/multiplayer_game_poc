@@ -5,6 +5,11 @@ import { PlayerJoined, Player, Event } from "./common.mjs";
 const SERVER_FPS = 30;
 
 let eventQueue: Array<Event> = [];
+
+function randomStyle(): string {
+  return `hsl(${Math.floor(Math.random() * 360)} 80% 50%)`;
+}
+
 interface PlayerWithSocket extends Player {
   ws: WebSocket,
 }
@@ -20,12 +25,14 @@ wss.on("connection", (ws) => {
   const id = idCounter++;
   const x = Math.random() * common.WORLD_WIDTH;
   const y = Math.random() * common.WORLD_HEIGHT;
+  const style = randomStyle();
 
   const player: PlayerWithSocket = {
     ws,
     id,
     x,
     y,
+    style,
     moving: {
       "left": false,
       "right": false,
@@ -37,7 +44,7 @@ wss.on("connection", (ws) => {
   console.log(`Player ${id} connected.`);
   eventQueue.push({
     kind: "PlayerJoined",
-    id, x, y,
+    id, x, y, style
   });
   ws.addEventListener("message", (event) => {
     const message = JSON.parse(event.data.toString());
@@ -82,6 +89,7 @@ function tick() {
             id: otherPlayer.id,
             x: otherPlayer.x,
             y: otherPlayer.y,
+            style: otherPlayer.style,
           }));
           if (otherPlayer.id !== joinedPlayer.id) {
             otherPlayer.ws.send(eventString);

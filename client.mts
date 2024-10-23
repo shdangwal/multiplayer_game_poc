@@ -33,7 +33,7 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
       const message = JSON.parse(event.data);
       if (common.isHello(message)) {
         myId = message.id;
-        console.log(`Connected as Player:${myId}`);
+        console.log(`Connected as Player:${myId}`, message);
       } else {
         console.log("Received bogus message from server:", message);
         ws.close();
@@ -51,6 +51,7 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
             "up": false,
             "down": false,
           },
+          style: message.style,
         });
       } else if (common.isPlayerLeft(message)) {
         players.delete(message.id);
@@ -78,9 +79,9 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
 
     ctx.fillStyle = "grey";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = "red";
     players.forEach((player) => {
       common.updatePlayer(player, deltaTime);
+      ctx.fillStyle = player.style;
       ctx.fillRect(player.x, player.y, common.PLAYER_SIZE, common.PLAYER_SIZE);
     });
 
