@@ -49,6 +49,9 @@ export function isPlayerMoving(arg) {
         && isBoolean(arg.start)
         && isDirection(arg.direction);
 }
+function correctMod(a, b) {
+    return ((a % b) + b) % b;
+}
 export function updatePlayer(player, deltaTime) {
     let dir;
     let dx = 0;
@@ -59,6 +62,6 @@ export function updatePlayer(player, deltaTime) {
             dy += DIRECTION_VECTORS[dir].y;
         }
     }
-    player.x += dx * PLAYER_SPEED * deltaTime;
-    player.y += dy * PLAYER_SPEED * deltaTime;
+    player.x = correctMod(player.x + dx * PLAYER_SPEED * deltaTime, WORLD_WIDTH);
+    player.y = correctMod(player.y + dy * PLAYER_SPEED * deltaTime, WORLD_HEIGHT);
 }
