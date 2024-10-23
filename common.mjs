@@ -2,12 +2,7 @@ export const SERVER_PORT = 6970;
 export const WORLD_WIDTH = 800;
 export const WORLD_HEIGHT = 600;
 export const PLAYER_SIZE = 30;
-export const DEFAULT_MOVING = {
-    "left": false,
-    "right": false,
-    "up": false,
-    "down": false,
-};
+export const PLAYER_SPEED = 500;
 export const DIRECTION_VECTORS = {
     "left": { x: -1, y: 0 },
     "right": { x: 1, y: 0 },
@@ -21,7 +16,7 @@ export function isBoolean(arg) {
     return typeof (arg) === "boolean";
 }
 export function isDirection(arg) {
-    return DEFAULT_MOVING[arg] !== undefined;
+    return DIRECTION_VECTORS[arg] !== undefined;
 }
 export function isHello(arg) {
     return arg && arg.kind === "Hello"
@@ -37,9 +32,16 @@ export function isPlayerLeft(arg) {
     return arg && arg.kind === "PlayerLeft"
         && isNumber(arg.id);
 }
+export function isAmmaMoving(arg) {
+    return arg && arg.kind === "AmmaMoving"
+        && isBoolean(arg.start)
+        && isDirection(arg.direction);
+}
 export function isPlayerMoving(arg) {
     return arg && arg.kind === "PlayerMoving"
         && isNumber(arg.id)
+        && isNumber(arg.x)
+        && isNumber(arg.y)
         && isBoolean(arg.start)
         && isDirection(arg.direction);
 }
@@ -53,6 +55,6 @@ export function updatePlayer(player, deltaTime) {
             dy += DIRECTION_VECTORS[dir].y;
         }
     }
-    player.x += dx * deltaTime;
-    player.y += dy * deltaTime;
+    player.x += dx * PLAYER_SPEED * deltaTime;
+    player.y += dy * PLAYER_SPEED * deltaTime;
 }

@@ -31,12 +31,15 @@ wss.on("connection", (ws) => {
     });
     ws.addEventListener("message", (event) => {
         const message = JSON.parse(event.data.toString());
-        if (common.isPlayerMoving(message)) {
-            if (message.id !== id) {
-                console.log(`Player ${id} tried to cheat by sending message ${message}`);
-                ws.close();
-            }
-            eventQueue.push(message);
+        if (common.isAmmaMoving(message)) {
+            eventQueue.push({
+                kind: "PlayerMoving",
+                id,
+                x: player.x,
+                y: player.y,
+                start: message.start,
+                direction: message.direction
+            });
         }
         else {
             console.log(`Recieved bogus message from client ${id}: `, message);
@@ -97,6 +100,7 @@ function tick() {
         }
     }
     eventQueue.length = 0;
+    players.forEach((player) => common.updatePlayer(player, 1 / SERVER_FPS));
     setTimeout(tick, 1000 / SERVER_FPS);
 }
 setTimeout(tick, 1000 / SERVER_FPS);

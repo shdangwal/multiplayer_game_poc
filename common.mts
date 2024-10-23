@@ -4,18 +4,12 @@ export const SERVER_PORT = 6970;
 export const WORLD_WIDTH = 800;
 export const WORLD_HEIGHT = 600;
 export const PLAYER_SIZE = 30;
+export const PLAYER_SPEED = 500;
 
-type Direction = "left" | "right" | "up" | "down";
+export type Direction = "left" | "right" | "up" | "down";
 
 type Moving = {
   [key in Direction]: boolean
-}
-
-export const DEFAULT_MOVING: Moving = {
-  "left": false,
-  "right": false,
-  "up": false,
-  "down": false,
 }
 
 export type Vector2 = { x: number, y: number };
@@ -42,7 +36,7 @@ export function isBoolean(arg: any): arg is boolean {
 }
 
 export function isDirection(arg: any): arg is Direction {
-  return DEFAULT_MOVING[arg as Direction] !== undefined;
+  return DIRECTION_VECTORS[arg as Direction] !== undefined;
 }
 
 export interface Hello {
@@ -79,9 +73,23 @@ export function isPlayerLeft(arg: any): arg is PlayerLeft {
     && isNumber(arg.id);
 }
 
+export interface AmmaMoving {
+  kind: "AmmaMoving",
+  start: boolean,
+  direction: Direction,
+}
+
+export function isAmmaMoving(arg: any): arg is AmmaMoving {
+  return arg && arg.kind === "AmmaMoving"
+    && isBoolean(arg.start)
+    && isDirection(arg.direction);
+}
+
 export interface PlayerMoving {
   kind: "PlayerMoving",
   id: number,
+  x: number,
+  y: number,
   start: boolean,
   direction: Direction,
 }
@@ -89,6 +97,8 @@ export interface PlayerMoving {
 export function isPlayerMoving(arg: any): arg is PlayerMoving {
   return arg && arg.kind === "PlayerMoving"
     && isNumber(arg.id)
+    && isNumber(arg.x)
+    && isNumber(arg.y)
     && isBoolean(arg.start)
     && isDirection(arg.direction);
 }
@@ -105,6 +115,6 @@ export function updatePlayer(player: Player, deltaTime: number) {
       dy += DIRECTION_VECTORS[dir].y;
     }
   }
-  player.x += dx * deltaTime;
-  player.y += dy * deltaTime;
+  player.x += dx * PLAYER_SPEED * deltaTime;
+  player.y += dy * PLAYER_SPEED * deltaTime;
 }

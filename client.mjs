@@ -1,4 +1,10 @@
 import * as common from "./common.mjs";
+const DIRECTION_KEYS = {
+    "ArrowLeft": "left",
+    "ArrowRight": "right",
+    "ArrowUp": "up",
+    "ArrowDown": "down",
+};
 (async () => {
     const gameCanvas = document.getElementById("game");
     if (gameCanvas === null)
@@ -39,11 +45,27 @@ import * as common from "./common.mjs";
                     id: message.id,
                     x: message.x,
                     y: message.y,
-                    moving: common.DEFAULT_MOVING,
+                    moving: {
+                        "left": false,
+                        "right": false,
+                        "up": false,
+                        "down": false,
+                    },
                 });
             }
             else if (common.isPlayerLeft(message)) {
                 players.delete(message.id);
+            }
+            else if (common.isPlayerMoving(message)) {
+                const player = players.get(message.id);
+                if (player === undefined) {
+                    console.log(`Received bogus message from server. We don't know anything about player with id ${message.id} and message: ${message}`);
+                    ws.close();
+                    return;
+                }
+                player.moving[message.direction] = message.start;
+                player.x = message.x;
+                player.y = message.y;
             }
             else {
                 console.log("Received bogus message from server:", message);
@@ -59,6 +81,7 @@ import * as common from "./common.mjs";
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = "red";
         players.forEach((player) => {
+            common.updatePlayer(player, deltaTime);
             ctx.fillRect(player.x, player.y, common.PLAYER_SIZE, common.PLAYER_SIZE);
         });
         window.requestAnimationFrame(frame);
@@ -66,5 +89,29 @@ import * as common from "./common.mjs";
     window.requestAnimationFrame((timestamp) => {
         previousTimestamp = timestamp;
         window.requestAnimationFrame(frame);
+    });
+    window.addEventListener("keydown", (e) => {
+        if (!e.repeat) {
+            const direction = DIRECTION_KEYS[e.code];
+            if (direction !== undefined) {
+                ws.send(JSON.stringify({
+                    kind: "AmmaMoving",
+                    start: true,
+                    direction
+                }));
+            }
+        }
+    });
+    window.addEventListener("keyup", (e) => {
+        if (!e.repeat) {
+            const direction = DIRECTION_KEYS[e.code];
+            if (direction !== undefined) {
+                ws.send(JSON.stringify({
+                    kind: "AmmaMoving",
+                    start: false,
+                    direction
+                }));
+            }
+        }
     });
 })();
