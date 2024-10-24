@@ -6,6 +6,10 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
   "ArrowRight": "right",
   "ArrowUp": "up",
   "ArrowDown": "down",
+  "KeyA": "left",
+  "KeyD": "right",
+  "KeyW": "up",
+  "KeyS": "down",
 };
 
 (async () => {
