@@ -77,12 +77,19 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
     const deltaTime = (timestamp - previousTimestamp) / 1000;
     previousTimestamp = timestamp;
 
-    ctx.fillStyle = "grey";
+    ctx.fillStyle = "#282828";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     players.forEach((player) => {
       common.updatePlayer(player, deltaTime);
       ctx.fillStyle = player.style;
       ctx.fillRect(player.x, player.y, common.PLAYER_SIZE, common.PLAYER_SIZE);
+      if (myId === player.id) {
+        ctx.strokeStyle = "#fefefe";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.strokeRect(player.x, player.y, common.PLAYER_SIZE, common.PLAYER_SIZE);
+        ctx.stroke();
+      }
     });
 
     window.requestAnimationFrame(frame);
