@@ -1,5 +1,5 @@
 import * as common from "./common.mjs"
-import type { Direction, Player } from "./common.mjs"
+import type { Direction, Player, AmmaMoving } from "./common.mjs"
 
 const DIRECTION_KEYS: { [key: string]: Direction } = {
   "ArrowLeft": "left",
@@ -108,11 +108,11 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
       if (!e.repeat) {
         const direction = DIRECTION_KEYS[e.code];
         if (direction !== undefined) {
-          ws.send(JSON.stringify({
+          common.sendMessage<AmmaMoving>(ws, {
             kind: "AmmaMoving",
             start: true,
             direction
-          }));
+          });
         }
       }
     }
@@ -123,11 +123,11 @@ const DIRECTION_KEYS: { [key: string]: Direction } = {
       if (!e.repeat) {
         const direction = DIRECTION_KEYS[e.code];
         if (direction !== undefined) {
-          ws.send(JSON.stringify({
+          common.sendMessage<AmmaMoving>(ws, {
             kind: "AmmaMoving",
             start: false,
             direction
-          }));
+          });
         }
       }
     }
