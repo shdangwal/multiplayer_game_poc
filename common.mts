@@ -126,6 +126,11 @@ export function updatePlayer(player: Player, deltaTime: number) {
       dy += DIRECTION_VECTORS[dir].y;
     }
   }
+  const l = dx * dx + dy * dy;
+  if (l !== 0) {
+    dx /= l;
+    dy /= l;
+  }
   player.x = correctMod(player.x + dx * PLAYER_SPEED * deltaTime, WORLD_WIDTH);
   player.y = correctMod(player.y + dy * PLAYER_SPEED * deltaTime, WORLD_HEIGHT);
 }
