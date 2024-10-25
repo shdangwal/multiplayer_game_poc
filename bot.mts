@@ -5,6 +5,8 @@ import { Player, AmmaMoving } from "./common.mjs";
 const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
 let me: Player | undefined = undefined;
 const players = new Map<number, Player>();
+let goalX = common.WORLD_WIDTH * 0.5;
+let goalY = common.WORLD_HEIGHT * 0.5;
 ws.addEventListener("message", (event) => {
   if (me === undefined) {
     const message = JSON.parse(event.data.toString());
