@@ -47,7 +47,14 @@ wss.on("connection", (ws) => {
     id, x, y, style
   });
   ws.addEventListener("message", (event) => {
-    const message = JSON.parse(event.data.toString());
+    let message;
+    try {
+      message = JSON.parse(event.data.toString());
+    } catch (e) {
+      console.log(`Recieved bogus message from client ${id}: `, message);
+      ws.close();
+      return;
+    }
     if (common.isAmmaMoving(message)) {
       eventQueue.push({
         kind: "PlayerMoving",
