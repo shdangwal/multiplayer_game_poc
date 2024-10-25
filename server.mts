@@ -1,6 +1,6 @@
 import WebSocket, { WebSocketServer } from "ws";
 import * as common from "./common.mjs";
-import { PlayerJoined, PlayerLeft, Player, Event, Hello } from "./common.mjs";
+import { PlayerMoving, PlayerJoined, PlayerLeft, Player, Event, Hello, Direction } from "./common.mjs";
 
 const SERVER_FPS = 30;
 
@@ -104,8 +104,10 @@ function tick() {
   joinedIds.forEach((joinedId) => {
     const joinedPlayer = players.get(joinedId);
     if (joinedPlayer !== undefined) {
-      // This should never happen, but we handling none existing ids
+      // This should never happen, but we are handling none existing ids
       // for more robustness
+
+      // The greeting
       common.sendMessage<Hello>(joinedPlayer.ws, {
         kind: "Hello",
         id: joinedPlayer.id,
@@ -114,6 +116,7 @@ function tick() {
         style: joinedPlayer.style,
       });
 
+      // Reconstructing the state of the other players
       players.forEach((otherPlayer) => {
         if (joinedId !== otherPlayer.id) {
           // Joined player should already know about themselves
@@ -124,6 +127,19 @@ function tick() {
             y: otherPlayer.y,
             style: otherPlayer.style,
           });
+          let direction: Direction;
+          for (direction in otherPlayer.moving) {
+            if (otherPlayer.moving[direction]) {
+              common.sendMessage<PlayerMoving>(joinedPlayer.ws, {
+                kind: "PlayerMoving",
+                id: otherPlayer.id,
+                x: otherPlayer.x,
+                y: otherPlayer.y,
+                start: true,
+                direction
+              });
+            }
+          }
         }
       });
     }
