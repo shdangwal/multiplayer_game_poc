@@ -46,7 +46,10 @@ export function isDirection(arg: any): arg is Direction {
 
 export interface Hello {
   kind: "Hello",
-  id: number
+  id: number,
+  x: number,
+  y: number,
+  style: string,
 }
 
 export function isHello(arg: any): arg is Hello {
