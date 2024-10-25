@@ -20,6 +20,8 @@ const players = new Map<number, PlayerWithSocket>();
 const wss = new WebSocketServer({
   port: common.SERVER_PORT,
 });
+const joinedIds = new Set<number>();
+const leftIds = new Set<number>();
 
 wss.on("connection", (ws) => {
   const id = idCounter++;
@@ -80,8 +82,9 @@ wss.on("connection", (ws) => {
 });
 
 function tick() {
-  const joinedIds = new Set<number>();
-  const leftIds = new Set<number>();
+  joinedIds.clear()
+  leftIds.clear()
+
   // This makes sure that if somebody joined and left within a 
   // single tick they are never handled
   for (const event of eventQueue) {
