@@ -24,8 +24,6 @@ function cmd(program, args = []) {
   return p;
 }
 
-cmd("tsc", ["-w"])
-//cmd("tsc", ["-w"])
 cmd('node', ['server.mjs'])
 // TODO: prod mode where we are listening to address 0.0.0.0
 cmd('http-server', ['-p', '6969', '-a', '127.0.0.1', '-s', '-c-1', '-d', 'false'])
