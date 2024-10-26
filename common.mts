@@ -142,6 +142,8 @@ interface Message {
   kind: string,
 }
 
-export function sendMessage<T extends Message>(socket: ws.WebSocket | WebSocket, message: T) {
-  socket.send(JSON.stringify(message));
+export function sendMessage<T extends Message>(socket: ws.WebSocket | WebSocket, message: T): number {
+  const text = JSON.stringify(message);
+  socket.send(text);
+  return text.length;
 }
